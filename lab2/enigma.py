@@ -1,55 +1,26 @@
 import sys
-from base64 import b64encode, b64decode
-
-class base_conv(object):
-    def __init__(self):
-        self.chars = 'abcdefghijklmnopqrstuvwxyz'
-        self.base = len(self.chars)
-        self.splitter = "!"
-        self.debug = False
-
-    @staticmethod
-    def base_alpha_encode(chars, base, binary):
-        encoded = ''
-        while int(binary) > 0:
-            binary, remainder = divmod(binary, base)
-            encoded = chars[remainder] + encoded
-        return encoded
-
-    @staticmethod
-    def base_alpha_decode(chars, base, charset):
-        i = 1
-        res = 0
-        for char in charset:
-            res += chars.index(char) * i
-            i *= base
-        return chr(res)
-
-    def to_base(self, string):
-        res = ''
-        for char in string:
-            res += self.base_alpha_encode(self.chars, self.base, ord(char)) + self.splitter
-        return res
-
-    def from_base(self, enc):
-        res = ''
-        char_list = enc.split(self.splitter)
-        char_list.pop()
-        for word in char_list:
-            res += self.base_alpha_decode(self.chars, self.base, word[::-1])
-        return res
-
 
 class Enigma(object):
+    rotorI =    'ekmflgdqvzntowyhxuspaibrcj'
+    rotorII =   'ajdksiruxblhwtmcqgznpyfvoe'
+    rotorIII =  'bdfhjlcprtxvznyeiwgakmusqo'
+    rotorIV =   'esovpzjayquirhxlnftgkdcmwb'
+    rotorV =    'vzbrgityupsdnhlxawmjqofeck'
+    rotorVI =   'jpgvoumfyqbenhzrdkasxlictw'
+    rotorVII =  'nzjhgrcxmyswboufaivlpekqdt'
+    rotorVIII = 'fkqhtlxocbjspdzramewniuygv'
+
+    reflectorA =    'ejmzalyxvbwfcrquontspikhgd'
+    reflectorB =    'yruhqsldpxngokmiebfzcwvjat'
+    reflectorC =    'fvpjiaoyedrzxwgctkuqsbnmhl'
     def __init__(self):
         self.rotor = []
         self.chars = 'abcdefghijklmnopqrstuvwxyz'
-        self.rotor.append('ekmflgdqvzntowyhxuspaibrcj')  # rotor I
-        self.rotor.append('ajdksiruxblhwtmcqgznpyfvoe')  # rotor II
-        self.rotor.append('bdfhjlcprtxvznyeiwgakmusqo')  # rotor III
-        self.reflector = 'yruhqsldpxngokmiebfzcwvjat'  # reflector b
-        # For the sake of simplification we will use
-        # knock-ups on each 26th symbol reached; right-to-left
+        self.rotor.append(self.rotorI)
+        self.rotor.append(self.rotorII)
+        self.rotor.append(self.rotorIII)
+        self.reflector = self.reflectorB
+
         self.rotor_index = [0, 0, 0]
         self.decrypt_index = [0, 0, 0]
 
@@ -68,10 +39,7 @@ class Enigma(object):
                 if rotor_index[0] == 26:
                     rotor_index[0] = 0
 
-    def crypt(self, char, splitter, rotor_index):
-        if char == splitter:
-            return splitter
-
+    def crypt(self, char, rotor_index):
         self.rotate_index(rotor_index)
         input, output = [], []
 
@@ -105,37 +73,24 @@ class Enigma(object):
 
         return self.chars[output[-1]]
 
-    def crypt_string(self, string, splitter):
+    def crypt_string(self, string):
         result = ""
         for char in string:
-            result += self.crypt(char, splitter, self.rotor_index)
+            result += self.crypt(char, self.rotor_index)
         return result
 
-    def decrypt_string(self, string, splitter):
+    def decrypt_string(self, string):
         result = ""
         for char in string:
-            result += self.crypt(char, splitter, self.decrypt_index)
+            result += self.crypt(char, self.decrypt_index)
         return result
 
 
 if __name__ == '__main__':
-    str = "Hello World! \U00012300"
-    print("Source : ", str)
-    basis = base_conv()
-    enigma = Enigma()
-    enc = basis.to_base(str)
-    print("Encoded string: ", enc, "\nLength: ", len(enc))
-    enigmed = enigma.crypt_string(enc, basis.splitter)
-    print("Crypted string: ", enigmed)
-    de_enigmed = enigma.decrypt_string(enigmed, basis.splitter)
-    print("Decrypted string: ", de_enigmed)
-    decode = basis.from_base(de_enigmed)
-    print("Decoded: ", decode)
-
-    '''str = "Hello World!\n"
+    str = "franklymydearidontgiveadamn"
     print("Source : ", str)
     enigma = Enigma()
-    enigmed = enigma.crypt_string(str, '!')
+    enigmed = enigma.crypt_string(str)
     print("Crypted string: ", enigmed)
-    de_enigmed = enigma.decrypt_string(enigmed, '!')
-    print("Decrypted string: ", de_enigmed)'''
+    decoded = enigma.decrypt_string(enigmed)
+    print("Decrypted string: ", decoded)
