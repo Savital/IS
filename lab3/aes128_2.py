@@ -2,7 +2,7 @@ nb = 4  # number of coloumn of State (for AES = 4)
 nr = 10  # number of rounds ib ciper cycle (if nb = 4 nr = 10)
 nk = 4  # the key length (in 32-bit words)
 
-# This dict will be used in SubBytes().
+# This dict will be used in SubBytes(). 
 hex_symbols_to_int = {'a': 10, 'b': 11, 'c': 12, 'd': 13, 'e': 14, 'f': 15}
 
 sbox = [
@@ -54,7 +54,7 @@ def encrypt(input_bytes, key):
     """Function encrypts the input_bytes according to AES(128) algorithm using the key
     Args:
        input_bytes -- list of int less than 255, ie list of bytes. Length of input_bytes is constantly 16
-       key -- a strig of plain text. Do not forget it! The same string is used in decryption
+       key -- a strig of plain text. Do not forget it! The same string is used in decryption   
     Returns:
         List of int
     """
@@ -63,7 +63,7 @@ def encrypt(input_bytes, key):
     state = [[] for j in range(4)]
     for r in range(4):
         for c in range(nb):
-            state[r].append(input_bytes[r + 4 * c]) #state[r,c] = input[r + 4c]
+            state[r].append(input_bytes[r + 4 * c])
 
     key_schedule = key_expansion(key)
 
@@ -91,7 +91,7 @@ def decrypt(cipher, key):
     """Function decrypts the cipher according to AES(128) algorithm using the key
     Args:
        cipher -- list of int less than 255, ie list of bytes
-       key -- a strig of plain text. Do not forget it! The same string is used in decryption
+       key -- a strig of plain text. Do not forget it! The same string is used in decryption 
     Returns:
         List of int
     """
@@ -129,12 +129,12 @@ def decrypt(cipher, key):
 
 def sub_bytes(state, inv=False):
     """That transformation replace every element from State on element from Sbox
-    according the algorithm: in hexadecimal notation an element from State
-    consist of two values: 0x<val1><val2>. We take elem from crossing
+    according the algorithm: in hexadecimal notation an element from State 
+    consist of two values: 0x<val1><val2>. We take elem from crossing 
     val1-row and val2-column in Sbox and put it instead of the element in State.
     If decryption-transformation is on (inv == True) it uses InvSbox instead Sbox.
     Args:
-        inv -- If value == False means function is encryption-transformation.
+        inv -- If value == False means function is encryption-transformation. 
                True - decryption-transformation
     """
 
@@ -179,10 +179,10 @@ def shift_rows(state, inv=False):
 
 
 def mix_columns(state, inv=False):
-    """When encrypting transformation multiplyes every column of State with
+    """When encrypting transformation multiplyes every column of State with 
     a fixed polinomial a(x) = {03}x**3 + {01}x**2 + {01}x + {02} in Galua field.
     When decrypting multiplies with a'(x) = {0b}x**3 + {0d}x**2 + {09}x + {0e}
-    Detailed information in AES standart.
+    Detailed information in AES standart. 
     Args:
         inv: If value == False means function is encryption mode. True - decryption mode
     """
@@ -209,7 +209,7 @@ def mix_columns(state, inv=False):
 
 
 def key_expansion(key):
-    """It makes list of RoundKeys for function AddRoundKey. All details
+    """It makes list of RoundKeys for function AddRoundKey. All details 
     about algorithm is is in AES standart
     """
 
@@ -256,7 +256,7 @@ def key_expansion(key):
 
 
 def add_round_key(state, key_schedule, round=0):
-    """That transformation combines State and KeySchedule together. Xor
+    """That transformation combines State and KeySchedule together. Xor 
     of State and RoundSchedule(part of KeySchedule).
     """
 
@@ -338,3 +338,4 @@ def mul_by_0d(num):
 def mul_by_0e(num):
     # return mul_by_0d(num)^num
     return mul_by_02(mul_by_02(mul_by_02(num))) ^ mul_by_02(mul_by_02(num)) ^ mul_by_02(num)
+

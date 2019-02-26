@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from Crypto.Hash import SHA256
-from Crypto.PublicKey import RSA
-from Crypto.Signature import pkcs1_15
+#from Crypto.Hash import SHA256
+#from Crypto.PublicKey import RSA
+#from Crypto.Signature import pkcs1_15
+from Cryptodome.Hash import SHA256
+from Cryptodome.PublicKey import RSA
+from Cryptodome.Signature import pkcs1_15
 import os
-
 
 def generateHash(fname="./des_ex.py"):
     h = SHA256.new()
