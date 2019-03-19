@@ -1,4 +1,4 @@
-import heapq
+import heapq # Реализация алгоритма очереди с приоритетами
 import os
 
 class HeapNode:
@@ -9,15 +9,14 @@ class HeapNode:
 		self.right = None
 
 	def __cmp__(self, other):
-		if(other == None):
+		if (other == None):
 			return -1
-		if(not isinstance(other, HeapNode)):
+		if (not isinstance(other, HeapNode)):
 			return -1
 		return self.freq > other.freq
 
 	def __lt__(self, other):
 		return self.freq < other.freq
-
 
 class HuffmanCoding:
 	def __init__(self, path):
@@ -27,7 +26,6 @@ class HuffmanCoding:
 		self.reverse_mapping = {}
 
 	# functions for compression:
-
 	def make_frequency_dict(self, text):
 		frequency = {}
 		for character in text:
@@ -42,7 +40,7 @@ class HuffmanCoding:
 			heapq.heappush(self.heap, node)
 
 	def merge_nodes(self):
-		while(len(self.heap)>1):
+		while (len(self.heap) > 1):
 			node1 = heapq.heappop(self.heap)
 			node2 = heapq.heappop(self.heap)
 
@@ -52,12 +50,11 @@ class HuffmanCoding:
 
 			heapq.heappush(self.heap, merged)
 
-
 	def make_codes_helper(self, root, current_code):
-		if(root == None):
+		if (root == None):
 			return
 
-		if(root.char != None):
+		if (root.char != None):
 			self.codes[root.char] = current_code
 			self.reverse_mapping[current_code] = root.char
 			return
@@ -65,19 +62,16 @@ class HuffmanCoding:
 		self.make_codes_helper(root.left, current_code + "0")
 		self.make_codes_helper(root.right, current_code + "1")
 
-
 	def make_codes(self):
 		root = heapq.heappop(self.heap)
 		current_code = ""
 		self.make_codes_helper(root, current_code)
-
 
 	def get_encoded_text(self, text):
 		encoded_text = ""
 		for character in text:
 			encoded_text += self.codes[character]
 		return encoded_text
-
 
 	def pad_encoded_text(self, encoded_text):
 		extra_padding = 8 - len(encoded_text) % 8
@@ -88,9 +82,8 @@ class HuffmanCoding:
 		encoded_text = padded_info + encoded_text
 		return encoded_text
 
-
 	def get_byte_array(self, padded_encoded_text):
-		if(len(padded_encoded_text) % 8 != 0):
+		if (len(padded_encoded_text) % 8 != 0):
 			print("Encoded text not padded properly")
 			exit(0)
 
@@ -99,7 +92,6 @@ class HuffmanCoding:
 			byte = padded_encoded_text[i:i+8]
 			b.append(int(byte, 2))
 		return b
-
 
 	def compress(self):
 		filename, file_extension = os.path.splitext(self.path)
@@ -110,6 +102,7 @@ class HuffmanCoding:
 			text = text.rstrip()
 
 			frequency = self.make_frequency_dict(text)
+
 			self.make_heap(frequency)
 			self.merge_nodes()
 			self.make_codes()
@@ -121,9 +114,7 @@ class HuffmanCoding:
 			output.write(bytes(b))
 		return output_path
 
-
 	""" functions for decompression: """
-
 	def remove_padding(self, padded_encoded_text):
 		padded_info = padded_encoded_text[:8]
 		extra_padding = int(padded_info, 2)
@@ -139,16 +130,16 @@ class HuffmanCoding:
 
 		for bit in encoded_text:
 			current_code += bit
-			if(current_code in self.reverse_mapping):
+			if (current_code in self.reverse_mapping):
 				character = self.reverse_mapping[current_code]
 				decoded_text += character
 				current_code = ""
 
 		return decoded_text
 
-
 	def decompress(self, input_path):
 		filename, file_extension = os.path.splitext(self.path)
+		print(file_extension)
 		output_path = filename + "_decompressed" + ".txt"
 
 		with open(input_path, 'rb') as file, open(output_path, 'w') as output:

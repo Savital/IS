@@ -1,9 +1,7 @@
 if __name__ == '__main__':
-
     import os
     import time
     import sys
-
     import aes128
     
     way = sys.argv[1]
@@ -21,8 +19,6 @@ if __name__ == '__main__':
         if ord(symbol) > 0xff:
             print('That key won\'t work. It must contain only latin alphabet and numbers')
             exit()
-    
-    print('\r\nPlease, wait...')
 
     time_before = time.time()
 
@@ -40,10 +36,6 @@ if __name__ == '__main__':
                 crypted_data.extend(crypted_part)
                 del temp[:]
         else:
-            #padding v1
-            # crypted_data.extend(temp)
-
-            # padding v2
             if 0 < len(temp) < 16:
                 empty_spaces = 16 - len(temp)
                 for i in range(empty_spaces - 1):
@@ -54,7 +46,6 @@ if __name__ == '__main__':
 
         out_path = os.path.join(os.path.dirname(input_path) , os.path.basename(input_path).split('.')[0] + ".encoded")
 
-        # Ounput data
         with open(out_path, 'wb') as ff:
             ff.write(bytes(crypted_data))
 
@@ -68,10 +59,6 @@ if __name__ == '__main__':
                 decrypted_data.extend(decrypted_part)
                 del temp[:] 
         else:
-            #padding v1
-            # decrypted_data.extend(temp)
-            
-            # padding v2
             if 0 < len(temp) < 16:
                 empty_spaces = 16 - len(temp)
                 for i in range(empty_spaces - 1):
@@ -88,5 +75,11 @@ if __name__ == '__main__':
 
     time_after = time.time()
     
-print('New file here:', out_path, '--', time_after - time_before, ' seconds')
-print('If smth wrong check the key you entered')
+print('Encoded file is:', out_path, '\nTime:', time_after - time_before, 'seconds')
+
+'''bash
+python main.py -e hello.txt HelloWorld666
+python main.py -d hello.encoded HelloWorld666
+python main.py -e hello.rar HelloWorld666
+python main.py -d hello.encoded HelloWorld666
+'''
